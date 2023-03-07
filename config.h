@@ -14,10 +14,17 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=17:anti
 
 #include "themes/catppuccin.h"
 
-static const char *colors[][3]      = {
+#define NUMCOLORS	8
+static const char *colors[NUMCOLORS][8]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm]       = { gray3,   black,  gray2 },
 	[SchemeSel]        = { gray4,   blue,   blue  },
+	[SchemeYellow]	   = { black,   yellow, red   },
+	[SchemeRed]	   = { black,   red,    red   },
+	[SchemeGreen]	   = { gray2,	green,  red   },
+	[SchemePink]	   = { black,	pink,   red   },
+	[SchemeGray]	   = { blue,	gray2,  red   },
+	[SchemeOrange]	   = { gray4,	orange,  red   },
 };
 
 /* tagging */
@@ -30,7 +37,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
