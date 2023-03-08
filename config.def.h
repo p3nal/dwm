@@ -17,22 +17,24 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=17:anti
 #define NUMCOLORS	20
 static const char *colors[NUMCOLORS][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm]       = { gray1,   black,  red },
+	[SchemeNorm]       = { gray1,   black, gray2 },
 	[SchemeSel]        = { black,   gray5,   blue  },
-	[SchemeYellow]	   = { black,   yellow, red   },
-	[SchemeYellowFg]   = { yellow,   black, red   },
-	[SchemeRed]	   = { black,   red,    red   },
+	[SchemeYellow]	   = { surface,   yellow, red   },
+	[SchemeYellowFg]   = { yellow,   surface, red   },
+	[SchemeRed]	   = { surface,   red,    red   },
 	[SchemeRedFg]	   = { red,   surface,    red   },
-	[SchemeGreen]	   = { black,	green,  red   },
+	[SchemeGreen]	   = { surface,	green,  red   },
 	[SchemeGreenFg]	   = { green,	surface,  red   },
-	[SchemePink]	   = { black,	pink,   red   },
+	[SchemePink]	   = { surface,	pink,   red   },
 	[SchemePinkFg]	   = { pink,	surface,   red   },
 	[SchemeGray]	   = { black,	gray5,  red   },
 	[SchemeGrayFg]	   = { gray5,	black,  red   },
-	[SchemeOrange]	   = { black,	orange,  red   },
-	[SchemeOrangeFg]   = { orange,	black,  red   },
+	[SchemeOrange]	   = { surface,	orange,  red   },
+	[SchemeOrangeFg]   = { orange,	surface,  red   },
 	[SchemeBlueFg]     = { blue,	black,  red  },
 	[SchemeBlue]       = { black,	blue,  red  },
+	[SchemeMauve]      = { surface,	mauve,  red  },
+	[SchemeMauveFg]    = { mauve, surface,  red  },
 };
 
 /* tagging */
@@ -61,7 +63,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "firefox",  NULL,       NULL,       1 << 3,       0,           -1 },
+	{ "firefox",  NULL,       NULL,       1 << 1,       0,           -1 },
+	{ "TelegramDesktop",  "telegram-desktop",       NULL,       1 << 2,       0,           -1 },
+	{ "vlc",  "vlc",       NULL,       1 << 6,       0,           -1 },
 };
 
 /* layout(s) */
@@ -72,9 +76,9 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
+	{ " ",      tile },    /* first entry is default */
+	{ "",      NULL },    /* no layout function means floating behavior */
+	{ "󰍹 ",      monocle },
 };
 
 /* key definitions */

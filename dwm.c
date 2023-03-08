@@ -63,7 +63,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeYellow, SchemeYellowFg, SchemeRed, SchemeRedFg, SchemeGreen, SchemeGreenFg, SchemePink, SchemePinkFg, SchemeGray, SchemeGrayFg, SchemeOrangeFg, SchemeOrange, SchemeBlue, SchemeBlueFg }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeYellow, SchemeYellowFg, SchemeRed, SchemeRedFg, SchemeGreen, SchemeGreenFg, SchemePink, SchemePinkFg, SchemeGray, SchemeGrayFg, SchemeOrangeFg, SchemeOrange, SchemeBlue, SchemeBlueFg, SchemeMauve, SchemeMauveFg }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -783,16 +783,13 @@ drawbar(Monitor *m)
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - x) > bh) {
-		/* just put it away from the beginning and pad it with 350 */
-		int mid = lrpad / 2 + 350;
+		/* just put it away from the beginning and pad it with 300 */
+		int mid = lrpad / 2 + 300;
 		time(&rawtime);
 		timeinfo = localtime(&rawtime);
-		char* timestr = asctime(timeinfo) + 7; // 11 - 4 is the lenth of the clock icon down
-		timestr[0] = ""[0];
-		timestr[1] = ""[1];
-		timestr[2] = ""[2];
-		timestr[3] = ' ';
-		timestr[9] = '\0';
+		char* longtimestr = asctime(timeinfo) + 11; // 11 is where the clock starts
+		char timestr[9] =  " ";
+		strncat(timestr, longtimestr, 5);
 		if (m->sel) {
 			// drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 			drw_setscheme(drw, scheme[SchemeBlueFg]);
