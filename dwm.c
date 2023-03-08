@@ -772,14 +772,16 @@ drawbar(Monitor *m)
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - x) > bh) {
-		/* fix overflow when window name is bigger than window width */
-		int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
-		/* make sure name will not overlap on tags even when it is very long */
-		mid = mid >= lrpad / 2 ? mid : lrpad / 2;
+		/* just put it away from the beginning and pad it with 350 */
+		int mid = lrpad / 2 + 350;
 		time(&rawtime);
 		timeinfo = localtime(&rawtime);
-		char* timestr = asctime(timeinfo) + 11;
-		timestr[5] = '\0';
+		char* timestr = asctime(timeinfo) + 7; // 11 - 4 is the lenth of the clock icon down
+		timestr[0] = ""[0];
+		timestr[1] = ""[1];
+		timestr[2] = ""[2];
+		timestr[3] = ' ';
+		timestr[9] = '\0';
 		if (m->sel) {
 			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, mid, timestr, 0);
