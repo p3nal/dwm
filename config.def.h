@@ -6,7 +6,7 @@ static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 10};
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const int user_bh            = 7;        /* 2 is the default spacing around the bar's font */
+static const int user_bh            = 10;        /* 2 is the default spacing around the bar's font */
 static const int vertpad            = 10;       /* vertical padding of bar */
 static const int sidepad            = 10;       /* horizontal padding of bar */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=19:antialias=true:autohint=true" };
@@ -14,17 +14,23 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=17:anti
 
 #include "themes/catppuccin.h"
 
-#define NUMCOLORS	8
-static const char *colors[NUMCOLORS][8]      = {
+#define NUMCOLORS	20
+static const char *colors[NUMCOLORS][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm]       = { gray3,   black,  gray2 },
-	[SchemeSel]        = { gray4,   blue,   blue  },
+	[SchemeNorm]       = { gray5,   black,  blue },
+	[SchemeSel]        = { black,   gray5,   blue  },
 	[SchemeYellow]	   = { black,   yellow, red   },
+	[SchemeYellowFg]   = { yellow,   black, red   },
 	[SchemeRed]	   = { black,   red,    red   },
-	[SchemeGreen]	   = { gray2,	green,  red   },
+	[SchemeRedFg]	   = { red,   black,    red   },
+	[SchemeGreen]	   = { black,	green,  red   },
+	[SchemeGreenFg]	   = { green,	black,  red   },
 	[SchemePink]	   = { black,	pink,   red   },
-	[SchemeGray]	   = { blue,	gray2,  red   },
-	[SchemeOrange]	   = { gray4,	orange,  red   },
+	[SchemePinkFg]	   = { pink,	black,   red   },
+	[SchemeGray]	   = { black,	gray5,  red   },
+	[SchemeGrayFg]	   = { gray5,	black,  red   },
+	[SchemeOrange]	   = { black,	orange,  red   },
+	[SchemeOrangeFg]   = { orange,	black,  red   },
 };
 
 /* tagging */

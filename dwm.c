@@ -63,7 +63,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeYellow, SchemeRed, SchemeGreen, SchemePink, SchemeGray, SchemeOrange }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeYellow, SchemeYellowFg, SchemeRed, SchemeRedFg, SchemeGreen, SchemeGreenFg, SchemePink, SchemePinkFg, SchemeGray, SchemeGrayFg, SchemeOrangeFg, SchemeOrange }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -736,12 +736,13 @@ drawbar(Monitor *m)
 	if (m == selmon) { /* status is only drawn on selected monitor */
 		drw_setscheme(drw, scheme[SchemeNorm]);
 		tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
-		// drw_text(drw, m->ww - tw - 2 * sp, 0, tw, bh, 0, stext, 0);
+		drw_text(drw, m->ww - tw - 2 * sp, 0, tw, bh, 0, "", 0);
 		while (1) {
 			if ((unsigned int)*ts > LENGTH(colors)) { ts++; continue ; }
 			ctmp = *ts;
 			*ts = '\0';
-			drw_text(drw, m->ww - tw + tx, 0, tw - tx, bh, 0, tp, 0);
+			// edit bh here                      v                      v
+			drw_text(drw, m->ww - tw + tx + 150, 6, tw - tx - 160, bh - 12, 0, tp, 0);
 			tx += TEXTW(tp) -lrpad;
 			if (ctmp == '\0') { break; }
 			drw_setscheme(drw, scheme[(unsigned int)(ctmp-1)]);
@@ -762,7 +763,8 @@ drawbar(Monitor *m)
 		// drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
+			// boxs is slight padding
+			drw_rect(drw, x, bh - boxw, w, boxw,
 				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
 				urg & 1 << i);
 		x += w;
@@ -773,23 +775,23 @@ drawbar(Monitor *m)
 
 	if ((w = m->ww - tw - x) > bh) {
 		/* just put it away from the beginning and pad it with 350 */
-		int mid = lrpad / 2 + 350;
-		time(&rawtime);
-		timeinfo = localtime(&rawtime);
-		char* timestr = asctime(timeinfo) + 7; // 11 - 4 is the lenth of the clock icon down
-		timestr[0] = ""[0];
-		timestr[1] = ""[1];
-		timestr[2] = ""[2];
-		timestr[3] = ' ';
-		timestr[9] = '\0';
-		if (m->sel) {
-			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-			drw_text(drw, x, 0, w, bh, mid, timestr, 0);
-		} else {
+		// int mid = lrpad / 2 + 350;
+		// time(&rawtime);
+		// timeinfo = localtime(&rawtime);
+		// char* timestr = asctime(timeinfo) + 7; // 11 - 4 is the lenth of the clock icon down
+		// timestr[0] = ""[0];
+		// timestr[1] = ""[1];
+		// timestr[2] = ""[2];
+		// timestr[3] = ' ';
+		// timestr[9] = '\0';
+		// if (m->sel) {
+			// drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+			// drw_text(drw, x, 0, w, bh, mid, timestr, 0);
+		// } else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
-			drw_text(drw, x, 0, w, bh, mid, timestr, 0);
-			// drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
-		}
+			// drw_text(drw, x, 0, w, bh, mid, timestr, 0);
+			drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
+		// }
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
