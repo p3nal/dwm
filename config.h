@@ -17,24 +17,43 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=17:anti
 #define NUMCOLORS	20
 static const char *colors[NUMCOLORS][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm]       = { gray5,   black,  blue },
+	[SchemeNorm]       = { gray1,   black,  red },
 	[SchemeSel]        = { black,   gray5,   blue  },
 	[SchemeYellow]	   = { black,   yellow, red   },
 	[SchemeYellowFg]   = { yellow,   black, red   },
 	[SchemeRed]	   = { black,   red,    red   },
-	[SchemeRedFg]	   = { red,   black,    red   },
+	[SchemeRedFg]	   = { red,   surface,    red   },
 	[SchemeGreen]	   = { black,	green,  red   },
-	[SchemeGreenFg]	   = { green,	black,  red   },
+	[SchemeGreenFg]	   = { green,	surface,  red   },
 	[SchemePink]	   = { black,	pink,   red   },
-	[SchemePinkFg]	   = { pink,	black,   red   },
+	[SchemePinkFg]	   = { pink,	surface,   red   },
 	[SchemeGray]	   = { black,	gray5,  red   },
 	[SchemeGrayFg]	   = { gray5,	black,  red   },
 	[SchemeOrange]	   = { black,	orange,  red   },
 	[SchemeOrangeFg]   = { orange,	black,  red   },
+	[SchemeBlueFg]     = { blue,	black,  red  },
+	[SchemeBlue]       = { black,	blue,  red  },
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "", "", "", "", "", "", "", "" };
+static const char *tags[] =          { "", "", "", "", "", "", "", "", "", "", "", "" };
+static const char *nonactivetags[] = { "", "", "", "", "", "", "", "", "", "", "", "" };
+
+static const char *tagsel[][2] = {
+	{ blue, black},
+	{ red, black},
+	{ yellow, black},
+	{ orange, black},
+	{ text, black},
+	{ mauve, black},
+	{ pink, black},
+	{ green, black},
+	{ gray1, black},
+	{ teal, black},
+	{ maroon, black},
+	{ flamingo, black},
+};
+
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -112,6 +131,9 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_F1,                      9)
+	TAGKEYS(                        XK_F2,                      10)
+	TAGKEYS(                        XK_F3,                      11)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 

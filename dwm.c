@@ -63,7 +63,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeYellow, SchemeYellowFg, SchemeRed, SchemeRedFg, SchemeGreen, SchemeGreenFg, SchemePink, SchemePinkFg, SchemeGray, SchemeGrayFg, SchemeOrangeFg, SchemeOrange }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeYellow, SchemeYellowFg, SchemeRed, SchemeRedFg, SchemeGreen, SchemeGreenFg, SchemePink, SchemePinkFg, SchemeGray, SchemeGrayFg, SchemeOrangeFg, SchemeOrange, SchemeBlue, SchemeBlueFg }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -278,6 +278,7 @@ static Atom wmatom[WMLast], netatom[NetLast];
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
+static Clr **tagscheme;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -759,14 +760,22 @@ drawbar(Monitor *m)
 	x = 0;
 	for (i = 0; i < LENGTH(tags); i++) {
 		w = TEXTW(tags[i]);
-		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+		// drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		// drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
-		if (occ & 1 << i)
+		//
+		// if there are windwos in a tag
+		if (occ & 1 << i) {
+			drw_setscheme(drw, tagscheme[i]);
+			// drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
+			drw_text(drw, x, 0, w, bh, lrpad / 2, (m->tagset[m->seltags] & 1 << i ? tags[i] : nonactivetags[SchemeNorm]), urg & 1 << i);
 			// boxs is slight padding
-			drw_rect(drw, x, bh - boxw, w, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
+			// drw_rect(drw, x, bh - boxw, w, boxw,
+			// 	m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+			// 	urg & 1 << i);
+		} else {
+			drw_setscheme(drw, (m->tagset[m->seltags] & 1 << i ? tagscheme[i] : scheme[SchemeNorm]));
+			drw_text(drw, x, 0, w, bh, lrpad / 2, (m->tagset[m->seltags] & 1 << i ? tags[i] : nonactivetags[SchemeNorm]), urg & 1 << i);
+		}
 		x += w;
 	}
 	w = TEXTW(m->ltsymbol);
@@ -775,23 +784,24 @@ drawbar(Monitor *m)
 
 	if ((w = m->ww - tw - x) > bh) {
 		/* just put it away from the beginning and pad it with 350 */
-		// int mid = lrpad / 2 + 350;
-		// time(&rawtime);
-		// timeinfo = localtime(&rawtime);
-		// char* timestr = asctime(timeinfo) + 7; // 11 - 4 is the lenth of the clock icon down
-		// timestr[0] = ""[0];
-		// timestr[1] = ""[1];
-		// timestr[2] = ""[2];
-		// timestr[3] = ' ';
-		// timestr[9] = '\0';
-		// if (m->sel) {
+		int mid = lrpad / 2 + 350;
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+		char* timestr = asctime(timeinfo) + 7; // 11 - 4 is the lenth of the clock icon down
+		timestr[0] = ""[0];
+		timestr[1] = ""[1];
+		timestr[2] = ""[2];
+		timestr[3] = ' ';
+		timestr[9] = '\0';
+		if (m->sel) {
 			// drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-			// drw_text(drw, x, 0, w, bh, mid, timestr, 0);
-		// } else {
+			drw_setscheme(drw, scheme[SchemeBlueFg]);
+			drw_text(drw, x, 0, w, bh, mid, timestr, 0);
+		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
-			// drw_text(drw, x, 0, w, bh, mid, timestr, 0);
-			drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
-		// }
+			drw_text(drw, x, 0, w, bh, mid, timestr, 0);
+			// drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
+		}
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
@@ -1661,9 +1671,14 @@ setup(void)
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
 	cursor[CurMove] = drw_cur_create(drw, XC_fleur);
 	/* init appearance */
+	if (LENGTH(tags) > LENGTH(tagsel))
+		die("too few color schemes for the tags");
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	tagscheme = ecalloc(LENGTH(tagsel), sizeof(Clr *));
+	for (i = 0; i < LENGTH(tagsel); i++)
+		tagscheme[i] = drw_scm_create(drw, tagsel[i], 2);
 	/* init bars */
 	updatebars();
 	updatestatus();
