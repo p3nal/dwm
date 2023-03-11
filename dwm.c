@@ -96,7 +96,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, CenterThisWindow, iscentered;
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, CenterThisWindow;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -1800,7 +1800,6 @@ tile(Monitor *m)
 
 	if (selmon->center) {
 		if (n == 1 && selmon->sel->CenterThisWindow) {
-			// selmon->sel->iscentered = 1;
 			resizeclient(selmon->sel,
 		(selmon->mw - selmon->mw * centerratio) / 2,
 		(selmon->mh - selmon->mh * centerratio) / 2,
@@ -1815,41 +1814,6 @@ togglecenter(const Arg *arg)
 {
 	selmon->center = !selmon->center;
 	arrange(selmon);
-	// unsigned int i, n, h, mw, my, ty;
-	// Client *c;
-	// Monitor *m = selmon;
-	//
-	// for (n = 0, c = nexttiled(selmon->clients); c; c = nexttiled(c->next), n++);
-	// if (n == 0)
-	// 	return;
-	//
-	// if (n > m->nmaster)
-	// 	mw = m->nmaster ? m->ww * m->mfact : 0;
-	// else
-	// 	mw = m->ww - m->gap->gappx;
-	// for (i = 0, my = ty = m->gap->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-	// 	if (i < m->nmaster) {
-	// 		h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gap->gappx;
-	// 		resize(c, m->wx + m->gap->gappx, m->wy + my, mw - (2*c->bw) - m->gap->gappx, h - (2*c->bw), 0);
-	// 		if (my + HEIGHT(c) + m->gap->gappx < m->wh)
-	// 			my += HEIGHT(c) + m->gap->gappx;
-	// 	} else {
-	// 		h = (m->wh - ty) / (n - i) - m->gap->gappx;
-	// 		resize(c, m->wx + mw + m->gap->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gap->gappx, h - (2*c->bw), 0);
-	// 		if (ty + HEIGHT(c) + m->gap->gappx < m->wh)
-	// 			ty += HEIGHT(c) + m->gap->gappx;
-	// 	}
-	//
-	//
-	// if (n == 1 && selmon->sel->CenterThisWindow) {
-	// 	if (selmon->sel->iscentered)
-	// 		resizeclient(selmon->sel,
-	// 		(selmon->mw - selmon->mw * 0.7) / 2,
-	// 		(selmon->mh - selmon->mh * 0.7) / 2,
-	// 		selmon->mw * 0.7,
-	// 		selmon->mh * 0.7);
-	// 	selmon->sel->iscentered = !selmon->sel->iscentered;
-	// }
 }
 
 void
