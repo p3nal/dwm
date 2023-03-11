@@ -130,6 +130,7 @@ struct Monitor {
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
 	Gap *gap;
+	int center;
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -665,6 +666,7 @@ createmon(void)
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
+	m->center = center;
 	m->gap = malloc(sizeof(Gap));
 	gap_copy(m->gap, &default_gap);
 	m->lt[0] = &layouts[0];
@@ -1796,55 +1798,58 @@ tile(Monitor *m)
 				ty += HEIGHT(c) + m->gap->gappx;
 		}
 
-	selmon->sel->iscentered = 0;
-	if (n == 1 && selmon->sel->CenterThisWindow) {
-		selmon->sel->iscentered = 1;
-		resizeclient(selmon->sel,
-	       (selmon->mw - selmon->mw * 0.7) / 2,
-	       (selmon->mh - selmon->mh * 0.7) / 2,
-	       selmon->mw * 0.7,
-	       selmon->mh * 0.7);
+	if (selmon->center) {
+		if (n == 1 && selmon->sel->CenterThisWindow) {
+			// selmon->sel->iscentered = 1;
+			resizeclient(selmon->sel,
+		(selmon->mw - selmon->mw * centerratio) / 2,
+		(selmon->mh - selmon->mh * centerratio) / 2,
+		selmon->mw * centerratio,
+		selmon->mh * centerratio);
+		}
 	}
 }
 
 void
 togglecenter(const Arg *arg)
 {
-	unsigned int i, n, h, mw, my, ty;
-	Client *c;
-	Monitor *m = selmon;
-
-	for (n = 0, c = nexttiled(selmon->clients); c; c = nexttiled(c->next), n++);
-	if (n == 0)
-		return;
-
-	if (n > m->nmaster)
-		mw = m->nmaster ? m->ww * m->mfact : 0;
-	else
-		mw = m->ww - m->gap->gappx;
-	for (i = 0, my = ty = m->gap->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-		if (i < m->nmaster) {
-			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gap->gappx;
-			resize(c, m->wx + m->gap->gappx, m->wy + my, mw - (2*c->bw) - m->gap->gappx, h - (2*c->bw), 0);
-			if (my + HEIGHT(c) + m->gap->gappx < m->wh)
-				my += HEIGHT(c) + m->gap->gappx;
-		} else {
-			h = (m->wh - ty) / (n - i) - m->gap->gappx;
-			resize(c, m->wx + mw + m->gap->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gap->gappx, h - (2*c->bw), 0);
-			if (ty + HEIGHT(c) + m->gap->gappx < m->wh)
-				ty += HEIGHT(c) + m->gap->gappx;
-		}
-
-
-	if (n == 1 && selmon->sel->CenterThisWindow) {
-		if (selmon->sel->iscentered)
-			resizeclient(selmon->sel,
-			(selmon->mw - selmon->mw * 0.7) / 2,
-			(selmon->mh - selmon->mh * 0.7) / 2,
-			selmon->mw * 0.7,
-			selmon->mh * 0.7);
-		selmon->sel->iscentered = !selmon->sel->iscentered;
-	}
+	selmon->center = !selmon->center;
+	arrange(selmon);
+	// unsigned int i, n, h, mw, my, ty;
+	// Client *c;
+	// Monitor *m = selmon;
+	//
+	// for (n = 0, c = nexttiled(selmon->clients); c; c = nexttiled(c->next), n++);
+	// if (n == 0)
+	// 	return;
+	//
+	// if (n > m->nmaster)
+	// 	mw = m->nmaster ? m->ww * m->mfact : 0;
+	// else
+	// 	mw = m->ww - m->gap->gappx;
+	// for (i = 0, my = ty = m->gap->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+	// 	if (i < m->nmaster) {
+	// 		h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gap->gappx;
+	// 		resize(c, m->wx + m->gap->gappx, m->wy + my, mw - (2*c->bw) - m->gap->gappx, h - (2*c->bw), 0);
+	// 		if (my + HEIGHT(c) + m->gap->gappx < m->wh)
+	// 			my += HEIGHT(c) + m->gap->gappx;
+	// 	} else {
+	// 		h = (m->wh - ty) / (n - i) - m->gap->gappx;
+	// 		resize(c, m->wx + mw + m->gap->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gap->gappx, h - (2*c->bw), 0);
+	// 		if (ty + HEIGHT(c) + m->gap->gappx < m->wh)
+	// 			ty += HEIGHT(c) + m->gap->gappx;
+	// 	}
+	//
+	//
+	// if (n == 1 && selmon->sel->CenterThisWindow) {
+	// 	if (selmon->sel->iscentered)
+	// 		resizeclient(selmon->sel,
+	// 		(selmon->mw - selmon->mw * 0.7) / 2,
+	// 		(selmon->mh - selmon->mh * 0.7) / 2,
+	// 		selmon->mw * 0.7,
+	// 		selmon->mh * 0.7);
+	// 	selmon->sel->iscentered = !selmon->sel->iscentered;
+	// }
 }
 
 void
