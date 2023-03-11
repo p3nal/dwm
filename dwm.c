@@ -96,7 +96,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, CenterThisWindow, iscentered;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -149,6 +149,7 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	int isfloating;
+	int CenterThisWindow;
 	int monitor;
 } Rule;
 
@@ -223,6 +224,7 @@ static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
 static void togglebar(const Arg *arg);
+static void togglecenter(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -306,6 +308,7 @@ applyrules(Client *c)
 
 	/* rule matching */
 	c->isfloating = 0;
+	c->CenterThisWindow = 0;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -318,6 +321,7 @@ applyrules(Client *c)
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
+			c->CenterThisWindow = r->CenterThisWindow;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
@@ -1791,6 +1795,56 @@ tile(Monitor *m)
 			if (ty + HEIGHT(c) + m->gap->gappx < m->wh)
 				ty += HEIGHT(c) + m->gap->gappx;
 		}
+
+	selmon->sel->iscentered = 0;
+	if (n == 1 && selmon->sel->CenterThisWindow) {
+		selmon->sel->iscentered = 1;
+		resizeclient(selmon->sel,
+	       (selmon->mw - selmon->mw * 0.7) / 2,
+	       (selmon->mh - selmon->mh * 0.7) / 2,
+	       selmon->mw * 0.7,
+	       selmon->mh * 0.7);
+	}
+}
+
+void
+togglecenter(const Arg *arg)
+{
+	unsigned int i, n, h, mw, my, ty;
+	Client *c;
+	Monitor *m = selmon;
+
+	for (n = 0, c = nexttiled(selmon->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster)
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		mw = m->ww - m->gap->gappx;
+	for (i = 0, my = ty = m->gap->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if (i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gap->gappx;
+			resize(c, m->wx + m->gap->gappx, m->wy + my, mw - (2*c->bw) - m->gap->gappx, h - (2*c->bw), 0);
+			if (my + HEIGHT(c) + m->gap->gappx < m->wh)
+				my += HEIGHT(c) + m->gap->gappx;
+		} else {
+			h = (m->wh - ty) / (n - i) - m->gap->gappx;
+			resize(c, m->wx + mw + m->gap->gappx, m->wy + ty, m->ww - mw - (2*c->bw) - 2*m->gap->gappx, h - (2*c->bw), 0);
+			if (ty + HEIGHT(c) + m->gap->gappx < m->wh)
+				ty += HEIGHT(c) + m->gap->gappx;
+		}
+
+
+	if (n == 1 && selmon->sel->CenterThisWindow) {
+		if (selmon->sel->iscentered)
+			resizeclient(selmon->sel,
+			(selmon->mw - selmon->mw * 0.7) / 2,
+			(selmon->mh - selmon->mh * 0.7) / 2,
+			selmon->mw * 0.7,
+			selmon->mh * 0.7);
+		selmon->sel->iscentered = !selmon->sel->iscentered;
+	}
 }
 
 void

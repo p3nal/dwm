@@ -63,9 +63,12 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "firefox",  NULL,       NULL,       1 << 1,       0,           -1 },
-	{ "TelegramDesktop",  "telegram-desktop",       NULL,       1 << 2,       0,           -1 },
-	{ "vlc",  "vlc",       NULL,       1 << 6,       0,           -1 },
+	/* class      	     instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
+	{ "st",				NULL,		NULL,		0,        0,           1,	-1 },
+	{ "firefox",			NULL,		NULL,       1 << 1,       0,           0,	-1 },
+	{ "TelegramDesktop",  "telegram-desktop",       NULL,       1 << 2,       0,           0,	-1 },
+	{ "vlc",			"vlc",		NULL,       1 << 6,       0,           0,	-1 },
+	{ "qBittorrent",	"qbittorrent",		NULL,       1 << 11,      0,           0,	-1 },
 };
 
 /* layout(s) */
@@ -94,7 +97,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-c", "-l", "6", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-c", "-l", "12", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
@@ -126,6 +129,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
 	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
+	{ MODKEY,	                XK_c,	   togglecenter,   {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
