@@ -52,7 +52,7 @@ static const char *tagsel[][2] = {
 	{ mauve, black},
 	{ pink, black},
 	{ green, black},
-	{ gray1, black},
+	{ white, black},
 	{ teal, black},
 	{ maroon, black},
 	{ flamingo, black},
@@ -65,12 +65,14 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	/* class      	     instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
+	/* class		     instance    title    tags mask     isfloating   CenterThisWindow?     monitor */
 	{ "st",				NULL,		NULL,		0,        0,           1,	-1 },
 	{ "firefox",			NULL,		NULL,       1 << 1,       0,           0,	-1 },
 	{ "TelegramDesktop",  "telegram-desktop",       NULL,       1 << 2,       0,           0,	-1 },
 	{ "vlc",			"vlc",		NULL,       1 << 6,       0,           0,	-1 },
 	{ "qBittorrent",	"qbittorrent",		NULL,       1 << 11,      0,           0,	-1 },
+	{ NULL,				NULL,	      "cmus",       1 << 10,      0,           0,	-1 },
+	{ NULL,			"virt-manager",	"Virtual Machine Manager",       1 << 8,       0,           1,	-1 },
 };
 
 /* layout(s) */

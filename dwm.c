@@ -749,7 +749,7 @@ drawbar(Monitor *m)
 			ctmp = *ts;
 			*ts = '\0';
 			// edit bh here                      v                      v
-			drw_text(drw, m->ww - tw + tx + 150, 6, tw - tx - 160, bh - 12, 0, tp, 0);
+			drw_text(drw, m->ww - tw + tx + 160, 6, tw - tx, bh - 12, 0, tp, 0);
 			tx += TEXTW(tp) -lrpad;
 			if (ctmp == '\0') { break; }
 			drw_setscheme(drw, scheme[(unsigned int)(ctmp-1)]);
