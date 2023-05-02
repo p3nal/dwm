@@ -72,7 +72,10 @@ static const Rule rules[] = {
 	{ "vlc",			"vlc",		NULL,       1 << 6,       0,           0,	-1 },
 	{ "qBittorrent",	"qbittorrent",		NULL,       1 << 11,      0,           0,	-1 },
 	{ NULL,				NULL,	      "cmus",       1 << 10,      0,           0,	-1 },
-	{ NULL,			"virt-manager",	"Virtual Machine Manager",       1 << 8,       0,           1,	-1 },
+	{ NULL,	        "virt-manager",	"Virtual Machine Manager",  1 << 8,       0,           1,	-1 },
+	{ "Inkscape",			NULL,		NULL,       1 << 8,       0,           0,	-1 },
+	{ "jetbrains-studio",     "jetbrains-studio",	NULL,       1 << 3,       0,           0,	-1 },
+	{ "Zathura",			NULL,		NULL,       1 << 7,       0,           0,	-1 },
 };
 
 /* layout(s) */
